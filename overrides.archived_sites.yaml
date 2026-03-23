@@ -1,0 +1,8 @@
+services:
+  backend:
+    volumes:
+      - archived-sites:/home/frappe/frappe-bench/archived
+
+volumes:
+  archived-sites:
+
