@@ -1,0 +1,32 @@
+networks:
+  net:
+    driver: bridge
+
+x-default-network: &default_network
+  networks:
+    net:
+
+services:
+  configurator:
+    <<: *default_network
+  backend:
+    <<: *default_network
+  frontend:
+    networks:
+      - net
+  websocket:
+    <<: *default_network
+  queue-short:
+    <<: *default_network
+  queue-long:
+    <<: *default_network
+  scheduler:
+    networks:
+      - net
+  db:
+    <<: *default_network
+  redis-cache:
+    <<: *default_network
+  redis-queue:
+    <<: *default_network
+

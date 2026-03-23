@@ -7,6 +7,9 @@ docker compose \
   --env-file prebuilt.env \
   -f overrides/compose.mariadb.yaml \
   -f overrides/compose.redis.yaml \
+  -f ../overrides.project_name.yaml \
+  -f ../overrides.network.yaml \
+  -f ../overrides.mariadb_version.yaml \
   config \
   -o compose.prebuilt.yaml
 
