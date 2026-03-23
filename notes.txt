@@ -4,7 +4,13 @@ https://github.com/frappe/frappe_docker.git
 Latest v15 (v15.96.1), but with nginx acme companion:
 99d9a1dc385d8a0660a67b0cbbfeac3d5229e58c
 
-1. clone the repo (shallow is fine)
+1. get the files (we check out the specific commit only)
+
+   git init frappe_docker
+   cd frappe_docker
+   git remote add origin https://github.com/frappe/frappe_docker.git
+   git fetch --depth 1 origin 99d9a1dc385d8a0660a67b0cbbfeac3d5229e58c
+   git checkout FETCH_HEAD
 
 2. generate (or use) custom env
    - use v15 is fine, we trust the devs
