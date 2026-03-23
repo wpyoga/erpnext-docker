@@ -27,6 +27,20 @@ TODO
 
 TODO
 
+## Multi Tenancy
+
+It is possible to do multi tenancy with Frappe and ERPNext. In the case of ERPNext, this means one server can host the ERP system of multiple organizations.
+
+The easiest way to do this is to set up multiple complete Frappe projects, so that each project hosts a single organization. Each project can be distinct from the others, can have different dependency versions, and different custom code for each one. But this is very resource-intensive, as the database and backend instances are duplicated.
+
+Another method is to set up a single database and cache instance, but with multiple Frappe projects (benches). This is a bit leaner on resources, and allows different ERPNext versions to be implemented for each tenant. This is called multi-bench multi-tenancy.
+
+The least resource-intensive method is to set up a single Frappe project, then create multiple sites under that project. Updates are easy to apply. This is called multi-site multi-tenancy. By default, sites are accessible by its name (which can be a hostname or an FQDN).
+
+
+
+
+
 
 
 
