@@ -2,6 +2,9 @@
 
 ENV_FILE=prebuilt.env
 
+. ./secrets.env
+. ./private.env
+
 # https://github.com/frappe/frappe_docker/blob/main/docs/environment-variables.md
 
 # this is the docker image tag, v15 means latest v15 build
@@ -9,10 +12,10 @@ ENV_FILE=prebuilt.env
 ERPNEXT_IMAGE_VERSION=v15
 
 # MariaDB root password
-MARIADB_ROOT_PASSWORD=123
+MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-123}
 
 # Email address for Let's Encrypt account
-LETSENCRYPT_ACCOUNT_EMAIL=mail@example.com
+LETSENCRYPT_ACCOUNT_EMAIL=${LETSENCRYPT_ACCOUNT_EMAIL:-mail@example.com}
 
 
 cat >frappe_docker/${ENV_FILE} <<EOF

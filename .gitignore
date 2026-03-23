@@ -1,2 +1,3 @@
 frappe_docker
-prebuilt.env
+secrets.env
+private.env
