@@ -15,7 +15,7 @@ Lastly, we create a site within the Frappe project. This site will have all the 
 
 ## Frappe with Docker
 
-With Docker, there is a caveat: Docker containers are immutable. Any changes made in runtime will disappear once the container is stopped. So the ERPNext app has to be integrated inside the Docker image, along with the Frappe project.
+With Docker, there is a caveat: Docker images are immutable. Any changes made at runtime will disappear once the container is removed. So if the Docker image is updated, changes will be lost. Therefore the ERPNext app has to be integrated inside the Docker image, along with the Frappe project.
 
 The Frappe project has provided ERPNext Docker images on Docker Hub, so we can just use those.
 
