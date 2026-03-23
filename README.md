@@ -21,7 +21,7 @@ The Frappe project has provided ERPNext Docker images on Docker Hub, so we can j
 
 ## Tailscale
 
-TODO
+To allow access to the ERPNext instance from within a Tailscale network, we can use a Tailscale sidecar arrangement. In this arrangement, a Tailscale container is added to the Docker compose file. No ports are forwarded from the Docker containers to the host, and all incoming connections come in through the Tailscale container. The Frappe project will then only be accessible within the tailnet.
 
 ## HTTPS with Tailscale
 
