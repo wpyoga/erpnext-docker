@@ -17,3 +17,12 @@ docker compose \
       --mariadb-user-host-login-scope='172.%.%.%' \
       --install-app erpnext
 
+echo Enabling scheduler...
+
+docker compose \
+  -p ${PROJECT_NAME:-frappe-test-project} \
+  exec backend \
+    bench \
+      --site ${SITENAME} \
+      enable-scheduler
+
