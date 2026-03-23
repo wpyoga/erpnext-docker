@@ -1,5 +1,9 @@
 services:
   backend:
+    post_start:
+      - command: chown frappe:frappe /home/frappe/frappe-bench/archived
+        user: root
+        privileged: true
     volumes:
       - archived-sites:/home/frappe/frappe-bench/archived
 
