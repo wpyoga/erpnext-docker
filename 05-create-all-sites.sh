@@ -16,7 +16,7 @@ docker compose \
 sort sites.txt | uniq > ${ALL_SITES}
 sort ${ACTIVE_SITES} ${ACTIVE_SITES} ${ALL_SITES} | uniq -u > ${NEW_SITES}
 
-cat ${NEW_SITES} | xargs -n 1 sh 05a-create-single-site.sh
+for i in $(cat ${NEW_SITES}); do sh 05a-create-single-site.sh "$i"; done
 
 rm ${ACTIVE_SITES} ${ALL_SITES} ${NEW_SITES}
 
