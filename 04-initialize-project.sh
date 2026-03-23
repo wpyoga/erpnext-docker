@@ -6,6 +6,6 @@ cd frappe_docker
 docker compose \
   -p ${PROJECT_NAME:-frappe-test-project} \
   -f compose.prebuilt.yaml \
-  up
+  up -d
 
 
