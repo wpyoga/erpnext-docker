@@ -1,0 +1,28 @@
+
+https://github.com/frappe/frappe_docker.git
+
+Latest v15 (v15.96.1), but with nginx acme companion:
+99d9a1dc385d8a0660a67b0cbbfeac3d5229e58c
+
+1. clone the repo (shallow is fine)
+
+2. generate (or use) custom env
+   - use v15 is fine, we trust the devs
+
+3. (maybe) no need to build image
+
+4. render compose file
+   - apply overrides
+   - apply custom env
+
+5. start the project (docker compose up)
+
+6. add site(s)
+   for each site:
+   1. add site to dns
+   2. request ssl cert
+   3. frappe bench create new site
+
+
+
+
