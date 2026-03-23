@@ -5,12 +5,14 @@
 
 SITENAME=${1:-test.example.com}
 
+echo Creating site: $SITENAME
+
 . ./private.env
 . ./secrets.env
 
 docker compose \
   -p ${PROJECT_NAME:-frappe-test-project} \
-  exec backend \
+  exec --no-tty backend \
     bench new-site ${SITENAME} \
       --admin-password admin \
       --db-root-password ${MARIADB_ROOT_PASSWORD} \
@@ -21,7 +23,7 @@ echo Enabling scheduler...
 
 docker compose \
   -p ${PROJECT_NAME:-frappe-test-project} \
-  exec backend \
+  exec --no-tty backend \
     bench \
       --site ${SITENAME} \
       enable-scheduler

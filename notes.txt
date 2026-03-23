@@ -30,5 +30,9 @@ Latest v15 (v15.96.1), but with nginx acme companion:
    3. frappe bench create new site
 
 
+get all active sites:
+docker compose -p fpt exec backend find sites -name site_config.json | cut -f 2 -d /
+
+
 
 
