@@ -8,16 +8,16 @@ ENV_FILE=prebuilt.env
 # it is possible to specify a particular version, for example v15.96.1
 ERPNEXT_IMAGE_VERSION=v15
 
-# MariaDB password
-MARIADB_PASSWORD=123
+# MariaDB root password
+MARIADB_ROOT_PASSWORD=123
 
 # Email address for Let's Encrypt account
-LETSENCRYPT_EMAIL=mail@example.com
+LETSENCRYPT_ACCOUNT_EMAIL=mail@example.com
 
 
 cat >frappe_docker/${ENV_FILE} <<EOF
 ERPNEXT_VERSION=${ERPNEXT_IMAGE_VERSION}
-DB_PASSWORD=${MARIADB_PASSWORD}
-LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+DB_PASSWORD=${MARIADB_ROOT_PASSWORD}
+LETSENCRYPT_EMAIL=${LETSENCRYPT_ACCOUNT_EMAIL}
 EOF
 
