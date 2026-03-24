@@ -15,7 +15,7 @@ docker compose \
   exec --no-tty backend \
     bench new-site ${SITENAME} \
       --admin-password admin \
-      --db-root-password ${MARIADB_ROOT_PASSWORD} \
+      --db-root-password ${DB_PASSWORD} \
       --mariadb-user-host-login-scope='172.%.%.%' \
       --install-app erpnext
 
