@@ -1,0 +1,13 @@
+FROM caddy:builder AS builder
+
+ARG DNS_PROVIDER
+
+RUN xcaddy build \
+    --with github.com/caddy-dns/${DNS_PROVIDER}
+
+FROM caddy:alpine
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--resume"]
+

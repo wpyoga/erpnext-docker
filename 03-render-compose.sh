@@ -1,6 +1,7 @@
 #!/bin/sh
 
 docker compose \
+  --project-directory $(pwd) \
   -f frappe_docker/compose.yaml \
   --env-file prebuilt.env \
   -f frappe_docker/overrides/compose.mariadb.yaml \
@@ -9,6 +10,7 @@ docker compose \
   -f overrides.network.yaml \
   -f overrides.mariadb_version.yaml \
   -f overrides.archived_sites.yaml \
+  -f overrides.caddy.yaml \
   -f overrides.tailscale.yaml \
   config \
   -o compose.prebuilt.yaml

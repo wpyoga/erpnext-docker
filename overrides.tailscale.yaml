@@ -24,7 +24,7 @@ services:
 configs:
   ts-serve:
     content: |
-      {"TCP":{"80":{"TCPForward":"frontend:8080"}}}
+      {"TCP":{"443":{"TCPForward":"caddy:443"}}}
 
 volumes:
   tailscale-data:

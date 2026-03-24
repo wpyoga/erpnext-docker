@@ -1,4 +1,5 @@
 # erpnext-docker
+
 Deploy ERPNext on Docker
 
 Docker here can mean Podman as well. It's just that the world has standardized on Docker.
@@ -25,7 +26,17 @@ To allow access to the ERPNext instance from within a Tailscale network, we can 
 
 ## HTTPS with Tailscale
 
-TODO
+There is a simple way to do this, with the following setup:
+- Wildcard sub-subdomain on the DNS server (\*.sub.example.com) pointing to Tailscale node IP
+- API access to registrar's DNS server
+- Caddy with appropriate DNS plugin for the registrar
+- Tailscale serving TCP port 443 and forwarding connections to Caddy port 443
+
+When the containers are first spun up, Caddy starts with a blank configuration. As sites are added, Caddy configuration is fleshed out, and it starts requesting TLS certificates using the DNS-01 challenge. This is the only challenge we can use, since the domains are only accessible inside the Tailnet.
+
+When a client visits a site, the incoming request first goes though Tailscale. It is then forwarded to Caddy, which responds with a signed certificate. The client verifies that the certificate is indeed valid for the domain, and proceeds. The client's request is then forwarded to the Frappe frontend container, which is just an Nginx instance forwarding requests to the Frappe container instance. Because the client requests a specific domain, it is passed along as the HTTP `Host:` header. This is how the Frappe backend instance knows which site is being requested.
+
+Note: QUIC is not supported because Tailscale does not support forwarding UDP ports.
 
 ## Multi Tenancy
 
