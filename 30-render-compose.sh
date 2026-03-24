@@ -3,7 +3,9 @@
 docker compose \
   --project-directory $(pwd) \
   -f frappe_docker/compose.yaml \
-  --env-file prebuilt.env \
+  --env-file config.env \
+  --env-file private.env \
+  --env-file secrets.env \
   -f frappe_docker/overrides/compose.mariadb.yaml \
   -f frappe_docker/overrides/compose.redis.yaml \
   -f overrides.project_name.yaml \

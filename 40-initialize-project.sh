@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ./prebuilt.env
+. ./private.env
 
 docker compose \
   -p ${PROJECT_NAME:-frappe-test-project} \
