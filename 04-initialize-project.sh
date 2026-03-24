@@ -1,6 +1,5 @@
 #!/bin/sh
 
-cd frappe_docker
 . ./prebuilt.env
 
 docker compose \
