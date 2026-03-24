@@ -4,7 +4,7 @@
 
 docker compose \
   -p ${PROJECT_NAME:-frappe-test-project} \
-  -f compose.prebuilt.yaml \
+  -f compose.yaml \
   up \
   --build \
   --detach

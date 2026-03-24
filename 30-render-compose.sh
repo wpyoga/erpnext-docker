@@ -15,6 +15,6 @@ docker compose \
   -f overrides.caddy.yaml \
   -f overrides.tailscale.yaml \
   config \
-  -o compose.prebuilt.yaml
+  -o compose.yaml
 
 
