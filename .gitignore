@@ -3,3 +3,4 @@ frappe_docker
 secrets.env
 private.env
 sites.txt
+compose.yaml
