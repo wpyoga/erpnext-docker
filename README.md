@@ -1,8 +1,10 @@
 # erpnext-docker
 
-Deploy ERPNext on Docker
+Deploy ERPNext on Docker, optionally with Tailscale.
 
 Docker here can mean Podman as well. It's just that the world has standardized on Docker.
+
+Tailscale here can also mean any similar VPN system. Even OpenVPN can work, albeit with a different structure.
 
 ## Basic Concepts
 
@@ -34,9 +36,9 @@ The least resource-intensive method is to set up a single Frappe project, then c
 
 To allow access to the ERPNext instance from within a Tailscale network, we can use a Tailscale sidecar arrangement. In this arrangement, a Tailscale container is added to the Docker compose file. No ports are forwarded from the Docker containers to the host, and all incoming connections come in through the Tailscale container. The Frappe project will then only be accessible within the tailnet.
 
-## HTTPS with Tailscale
+## Multi Tenant HTTPS with Tailscale
 
-There is a simple way to do this, with the following setup:
+This is suitable for personal use or small organizations where finances and affairs are compartmentalized. Multiple ERPNext sites are hosted as subdomains within a single domain. One simple setup to achieve this would be:
 - Wildcard sub-subdomain on the DNS server (\*.sub.example.com) pointing to Tailscale node IP
 - API access to registrar's DNS server
 - Caddy with appropriate DNS plugin for the registrar
@@ -48,6 +50,36 @@ When a client visits a site, the incoming request first goes though Tailscale. I
 
 Note: QUIC is not supported because Tailscale does not support forwarding UDP ports.
 
+### Multiple domains with a single Tailscale entry point
+
+This is applicable for an organization with multiple divisions. The setup would be:
+- One subdomain per site (multiple sites can share one subdomain)
+- API access to each site's registrar DNS server
+- Caddy with all DNS plugins enabled
+- Tailscale serving TCP port 443 and forwarding connections to Caddy port 443
+
+The process of creating a site then goes like this:
+1. Add an A record to the registrar's DNS if it's not a wildcard domain
+1. Update Caddy config with the new site
+1. `bench new-site`
+
+### Multiple domains on a single server with a Public IP address
+
+This is actually a common use case for independent contractors selling ERPNext hosting services. The setup looks like this:
+- One subdomain per site
+- API access to each site's registrar DNS server -- OR -- the server itself hosts a DNS server to respond to DNS-01 challenges
+- Caddy with all DNS plugins enabled, directly facing the Internet.
+
+The process of creating a site then goes like this:
+1. Add an A record to the registrar's DNS if it's not a wildcard domain
+1. Update Caddy config with the new site
+1. `bench new-site` with a randomized admin password
+
+There are multiple ways to expand this concept:
+- Have multiple servers behind a reverse proxy / load balancer
+- Have multiple servers with multiple Public IP addresses
+- Web dashboard to manage the deployments
+
 ## Example scripts
 
 Example scripts are provided in this repo. To use them, first plan out the project and fill out these files:
@@ -56,7 +88,7 @@ Example scripts are provided in this repo. To use them, first plan out the proje
 - `secrets.env`: passwords and keys
 - `sites.txt`: list of sites to create -- more can be added later, as necessary
 
-Right now, only ERPNext v15 and Porkbun are supported.
+Right now, only ERPNext v15 and Porkbun are supported. Also, only a single domain with wildcards is supported for now.
 
 Then, run these scripts in order:
 1. `10-checkout-repo.sh`: Check out the official `frappe_docker` repo
