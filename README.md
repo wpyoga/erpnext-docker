@@ -22,6 +22,10 @@ With Docker, there is a caveat: Docker images are immutable. Any changes made at
 
 The Frappe project has provided ERPNext Docker images on Docker Hub, so we can just use those.
 
+## Tailscale
+
+To allow access to the ERPNext instance from within a Tailscale network, we can use a Tailscale sidecar arrangement. In this arrangement, a Tailscale container is added to the Docker compose file. No ports are forwarded from the Docker containers to the host, and all incoming connections come in through the Tailscale container. The Frappe project will then only be accessible within the tailnet.
+
 ## Multi Tenancy
 
 It is possible to do multi tenancy with Frappe and ERPNext. In the case of ERPNext, this means one server can host the ERP system of multiple organizations.
@@ -32,11 +36,7 @@ Another method is to set up a single database and cache instance, but with multi
 
 The least resource-intensive method is to set up a single Frappe project, then create multiple sites under that project. Updates are easy to apply. This is called multi-site multi-tenancy. By default, sites are accessible by its name (which can be a hostname or an FQDN).
 
-## Tailscale
-
-To allow access to the ERPNext instance from within a Tailscale network, we can use a Tailscale sidecar arrangement. In this arrangement, a Tailscale container is added to the Docker compose file. No ports are forwarded from the Docker containers to the host, and all incoming connections come in through the Tailscale container. The Frappe project will then only be accessible within the tailnet.
-
-## Multi Tenant HTTPS with Tailscale
+### Multi Tenant HTTPS with Tailscale
 
 This is suitable for personal use or small organizations where finances and affairs are compartmentalized. Multiple ERPNext sites are hosted as subdomains within a single domain. One simple setup to achieve this would be:
 - Wildcard sub-subdomain on the DNS server (\*.sub.example.com) pointing to Tailscale node IP
