@@ -66,5 +66,5 @@ Then, run these scripts in order:
 1. `50-create-wildcard-domain.sh`: Create a wildcard domain (at the registrar) pointing to the Tailscale node
 1. `60-create-all-sites.sh`: Create the sites
 
-During each step, check the console messages and Docker logs, see if there are any errors or warnings. [Open an issue](issues) if there are problems.
+During each step, check the console messages and Docker logs, see if there are any errors or warnings. [Open an issue](../../issues) if there are problems.
 
