@@ -20,6 +20,16 @@ With Docker, there is a caveat: Docker images are immutable. Any changes made at
 
 The Frappe project has provided ERPNext Docker images on Docker Hub, so we can just use those.
 
+## Multi Tenancy
+
+It is possible to do multi tenancy with Frappe and ERPNext. In the case of ERPNext, this means one server can host the ERP system of multiple organizations.
+
+The easiest way to do this is to set up multiple complete Frappe projects, so that each project hosts a single organization. Each project can be distinct from the others, can have different dependency versions, and different custom code for each one. But this is very resource-intensive, as the database and backend instances are duplicated.
+
+Another method is to set up a single database and cache instance, but with multiple Frappe projects (benches). This is a bit leaner on resources, and allows different ERPNext versions to be implemented for each tenant. This is called multi-bench multi-tenancy.
+
+The least resource-intensive method is to set up a single Frappe project, then create multiple sites under that project. Updates are easy to apply. This is called multi-site multi-tenancy. By default, sites are accessible by its name (which can be a hostname or an FQDN).
+
 ## Tailscale
 
 To allow access to the ERPNext instance from within a Tailscale network, we can use a Tailscale sidecar arrangement. In this arrangement, a Tailscale container is added to the Docker compose file. No ports are forwarded from the Docker containers to the host, and all incoming connections come in through the Tailscale container. The Frappe project will then only be accessible within the tailnet.
@@ -37,16 +47,6 @@ When the containers are first spun up, Caddy starts with a blank configuration. 
 When a client visits a site, the incoming request first goes though Tailscale. It is then forwarded to Caddy, which responds with a signed certificate. The client verifies that the certificate is indeed valid for the domain, and proceeds. The client's request is then forwarded to the Frappe frontend container, which is just an Nginx instance forwarding requests to the Frappe container instance. Because the client requests a specific domain, it is passed along as the HTTP `Host:` header. This is how the Frappe backend instance knows which site is being requested.
 
 Note: QUIC is not supported because Tailscale does not support forwarding UDP ports.
-
-## Multi Tenancy
-
-It is possible to do multi tenancy with Frappe and ERPNext. In the case of ERPNext, this means one server can host the ERP system of multiple organizations.
-
-The easiest way to do this is to set up multiple complete Frappe projects, so that each project hosts a single organization. Each project can be distinct from the others, can have different dependency versions, and different custom code for each one. But this is very resource-intensive, as the database and backend instances are duplicated.
-
-Another method is to set up a single database and cache instance, but with multiple Frappe projects (benches). This is a bit leaner on resources, and allows different ERPNext versions to be implemented for each tenant. This is called multi-bench multi-tenancy.
-
-The least resource-intensive method is to set up a single Frappe project, then create multiple sites under that project. Updates are easy to apply. This is called multi-site multi-tenancy. By default, sites are accessible by its name (which can be a hostname or an FQDN).
 
 ## Example scripts
 
