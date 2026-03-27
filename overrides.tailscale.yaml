@@ -19,7 +19,7 @@ services:
       - sys_module
     restart: unless-stopped
     depends_on:
-      - frontend
+      - caddy
 
 configs:
   ts-serve:
