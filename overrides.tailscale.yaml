@@ -1,7 +1,7 @@
 services:
   tailscale:
     image: tailscale/tailscale:latest
-    hostname: ${PROJECT_NAME:-frappe-test-project}
+    hostname: ${PROJECT_NAME}
     networks:
       - net
     environment:

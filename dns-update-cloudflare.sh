@@ -10,15 +10,15 @@ LISTEN_IP="$3"
 
 if [ "${WILDCARD}" = "1" ]; then
   if [ -n "${SUBDOMAIN}" ]; then
-    SELECTOR="*.${SUBDOMAIN}"
+    FQDN="*.${SUBDOMAIN}.${DOMAIN}"
   else
-    SELECTOR="*"
+    FQDN="*.${DOMAIN}"
   fi
 else
   if [ -n "${SUBDOMAIN}" ]; then
-    SELECTOR="${HOSTNAME}.${SUBDOMAIN}"
+    FQDN="${HOSTNAME}.${SUBDOMAIN}.${DOMAIN}"
   else
-    SELECTOR="${HOSTNAME}"
+    FQDN="${HOSTNAME}.${DOMAIN}"
   fi
 fi
 
@@ -26,23 +26,25 @@ COMMAND_JSON=$(mktemp)
 
 cat > ${COMMAND_JSON} <<EOF
 {
-  "name": "${SELECTOR}",
-  "type": "A",
-  "content": "${LISTEN_IP}",
-  "apikey": "${DNS_API_KEY}",
-  "secretapikey": "${DNS_API_SECRET}"
+  "puts": [
+    {
+      "name": "${FQDN}",
+      "type": "A",
+      "content": "${LISTEN_IP}",
+      "ttl": 1
+    }
+  ]
 }
 EOF
 
 echo "Creating DNS record: ${DNS_RECORD} A ${LISTEN_IP}"
 
-curl "https://api.porkbun.com/api/json/v3/dns/create/${DOMAIN}" \
+curl "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records/batch" \
   -X POST \
   -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${DNS_API_TOKEN}" \
   --data-binary  @${COMMAND_JSON}
 echo
-
-echo "If you see a SUCCESS message with \"Duplicate record exists locally.\" then the record had previously been added."
 
 rm ${COMMAND_JSON}
 

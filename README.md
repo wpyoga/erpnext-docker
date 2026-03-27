@@ -82,21 +82,20 @@ There are multiple ways to expand this concept:
 
 ## Example scripts
 
-Example scripts are provided in this repo. To use them, first plan out the project and fill out these files:
-- `config.env`: general configuration
-- `private.env`: project-specific parameters
+Example scripts are provided in this repo. To use them, first plan out the project and create these files:
+- `build.env`: general configuration
+- `project.env`: project-specific parameters
 - `secrets.env`: passwords and keys
-- `sites.txt`: list of sites to create -- more can be added later, as necessary
+- `sites/*.env`: site-specific configuration, including DNS keys etc
 
 Right now, only ERPNext v15 and Porkbun are supported. Also, only a single domain with wildcards is supported for now.
 
 Then, run these scripts in order:
-1. `10-checkout-repo.sh`: Check out the official `frappe_docker` repo
+1. `10-checkout-repo.sh`: Clone (shallow) the official `frappe_docker` repo
 1. `30-render-compose.sh`: Using the information gathered, fully render out compose.yaml from the `frappe_docker` repo
 1. `40-initialize-project.sh`: Deploy the project (spin up containers)
    - Be sure to check the Tailscale logs and add the node to the Tailnet
-1. `50-create-wildcard-domain.sh`: Create a wildcard domain (at the registrar) pointing to the Tailscale node
-1. `60-create-all-sites.sh`: Create the sites
+1. `70-create-sites.sh`: Create the sites, including DNS entries
 
 During each step, check the console messages and Docker logs, see if there are any errors or warnings. [Open an issue](../../issues) if there are problems.
 

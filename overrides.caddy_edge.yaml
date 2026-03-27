@@ -1,0 +1,5 @@
+services:
+  caddy:
+    ports:
+      - 443:443
+      - 443:443/udp

@@ -1,9 +1,8 @@
 FROM caddy:builder AS builder
 
-ARG DNS_PROVIDER
-
 RUN xcaddy build \
-    --with github.com/caddy-dns/${DNS_PROVIDER}
+    --with github.com/caddy-dns/cloudflare \
+    --with github.com/caddy-dns/porkbun
 
 FROM caddy:alpine
 

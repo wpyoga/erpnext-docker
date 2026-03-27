@@ -2,8 +2,6 @@ services:
   caddy:
     build:
       dockerfile: Dockerfile.caddy
-      args:
-        DNS_PROVIDER: ${DNS_PROVIDER}
     restart: unless-stopped
     networks:
       - net

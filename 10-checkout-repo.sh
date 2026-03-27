@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 git init frappe_docker
 
 cd frappe_docker

@@ -1,6 +1,6 @@
 *.swp
 frappe_docker
+project.env
 secrets.env
-private.env
-sites.txt
 compose.yaml
+sites/*.env
