@@ -12,8 +12,7 @@ services:
   backend:
     <<: *default_network
   frontend:
-    networks:
-      - net
+    <<: *default_network
   websocket:
     <<: *default_network
   queue-short:
@@ -21,8 +20,7 @@ services:
   queue-long:
     <<: *default_network
   scheduler:
-    networks:
-      - net
+    <<: *default_network
   db:
     <<: *default_network
   redis-cache:
