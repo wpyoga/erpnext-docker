@@ -8,19 +8,42 @@ Tailscale here can also mean any similar VPN system. Even OpenVPN can work, albe
 
 ## Basic Concepts
 
-ERPNext is an ERP application that runs on top of the Frappe framework and uses the framework. It is not built *with* the Frappe framework, unlike a Laravel app or a Next.js app. Think of it like Nginx (the application) built on top of an Alpine Linux docker image (the framework). Only in this case, the application cannot run without or outside of the framework.
+ERPNext is an ERP application that is built on top of the Frappe framework.
 
-To run ERPNext, first we have to deploy a Frappe project. This comes with its own dependencies, namely a database (MariaDB by default) and a cache (Redis).
+This is the general order of operations to set up ERPNext:
+1. Deploy a Frappe project
+1. Install ERPNext into the project
+1. Create a site within the project
+1. Install ERPNext into the site
 
-Then, we install the ERPNext into the project.
+All the steps above require the use of the bench CLI, which was made specifically to manage Frappe projects. It can deploy a Frappe project, install applications (not just ERPNext) into the project, create a site within the project, and install applications in the project into the site.
 
-Lastly, we create a site within the Frappe project. This site will have all the applications that we have installed in the project. In our case, that will be only ERPNext.
+A Frappe project always has a Frappe application inside it. It is automatically installed when deploying a Frappe project. This Frappe application is then imported by other apps (such as ERPNext).
+
+A Frappe site is a deployment instance hosted inside the deployed Frappe project. Installing an app means making the app available within the site. This site is what users actually interact with.
+
+Before deploying a Frappe project, dependencies must be installed. Aside from the Python runtime, the Frappe framework needs a database (MariaDB by default) and a cache (Redis). Individual applications can have their own external dependencies, which need to be installed separately.
+
+To make user access efficient, a reverse proxy (usually Nginx) handles incoming connections. The official ERPNext Docker image bundles Nginx and runs it in a container named *frontend*. In reality it's just Nginx with ERPNext-specific configuration.
 
 ## Frappe with Docker
 
-With Docker, there is a caveat: Docker images are immutable. Any changes made at runtime will disappear once the container is removed. So if the Docker image is updated, changes will be lost. Therefore the ERPNext app has to be integrated inside the Docker image, along with the Frappe project.
+Deploying a Frappe project is easy with Docker. However, since Docker containers are not meant to be modified after deployment. Therefore, the recommended way to deploy ERPNext with Docker is to deploy a Frappe project, then install the ERPNext application into it. A nice bonus is that deploying it this way simplifies upgrades later on. The downside is that in order to install more Frappe applications, we have to rebuild the deployment image.
 
-The Frappe project has provided ERPNext Docker images on Docker Hub, so we can just use those.
+The Frappe project has provided official ERPNext Docker images on Docker Hub, so we can just use those. It has been prepared in such a way that ERPNext deployment is as simple as it gets. The image:
+- Has bench installed, which we can use to manage deployment
+- Has MariaDB and PostgreSQL client utilities installed
+- Has a Frappe project deployed in /home/frappe/frappe-bench
+- Has ERPNext installed inside the Frappe project
+- Has multiple services integrated:
+  - frontend: Nginx reverse proxy
+  - backend: Gunicorn server
+  - websocket: Node.js web socket
+  - scheduler: Frappe scheduler
+  - queue-long: Frappe worker that priorities longer jobs
+  - queue-short: Frappe worker that handles short and normal jobs
+
+Note that aside from Nginx, the other services are all components of the deployed Frappe project. Also note that while the Nginx binary is not a custom build, its configuration is very tightly coupled to Frappe.
 
 ## Tailscale
 
@@ -38,7 +61,7 @@ The least resource-intensive method is to set up a single Frappe project, then c
 
 ### Multi Tenant HTTPS with Tailscale
 
-This is suitable for personal use or small organizations where finances and affairs are compartmentalized. Multiple ERPNext sites are hosted as subdomains within a single domain. One simple setup to achieve this would be:
+This is suitable for personal use or small organizations where finances and business processes are compartmentalized. Multiple ERPNext sites are hosted as subdomains within a single domain. One simple setup to achieve this would be:
 - Wildcard sub-subdomain on the DNS server (\*.sub.example.com) pointing to Tailscale node IP
 - API access to registrar's DNS server
 - Caddy with appropriate DNS plugin for the registrar
@@ -80,22 +103,25 @@ There are multiple ways to expand this concept:
 - Have multiple servers with multiple Public IP addresses
 - Web dashboard to manage the deployments
 
-## Example scripts
+## Helper scripts
 
-Example scripts are provided in this repo. To use them, first plan out the project and create these files:
+Helper scripts are provided in this repo. These configurations are supported:
+- ERPNext v15
+- Serve on a public IP address or within a Tailscale network
+- DNS hosted on Cloudflare or Porkbun
+
+To use the scripts, first plan out the project and prepare these files:
 - `build.env`: general configuration
 - `project.env`: project-specific parameters
 - `secrets.env`: passwords and keys
-- `sites/*.env`: site-specific configuration, including DNS keys etc
-
-Right now, only ERPNext v15 and Porkbun are supported. Also, only a single domain with wildcards is supported for now.
+- `sites/*.env`: site-specific configuration, including DNS keys etc (one site per file)
 
 Then, run these scripts in order:
 1. `10-checkout-repo.sh`: Clone (shallow) the official `frappe_docker` repo
-1. `30-render-compose.sh`: Using the information gathered, fully render out compose.yaml from the `frappe_docker` repo
+1. `30-render-compose.sh`: Fully render out compose.yaml from the `frappe_docker` repo
 1. `40-initialize-project.sh`: Deploy the project (spin up containers)
-   - Be sure to check the Tailscale logs and add the node to the Tailnet
-1. `70-create-sites.sh`: Create the sites, including DNS entries
+   - If using Tailscale, be sure to check the Tailscale container logs and add the node to the Tailnet
+1. `70-create-sites.sh`: Create the sites, including DNS records
 
-During each step, check the console messages and Docker logs, see if there are any errors or warnings. [Open an issue](../../issues) if there are problems.
+During each step, check the console messages and Docker logs, and see if there are any errors or warnings. [Open an issue](../../issues) if there are problems.
 
