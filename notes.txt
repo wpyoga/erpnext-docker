@@ -31,8 +31,10 @@ Latest v15 (v15.96.1), but with nginx acme companion:
 
 
 get all active sites:
-docker compose -p fpt exec backend find sites -name site_config.json | cut -f 2 -d /
+docker compose -p frappe-test-project exec backend find sites -name site_config.json | cut -f 2 -d /
 
+see what service a container is running:
+echo; docker compose -p frappe-test-project exec queue-long sh -c "for cmdline in /proc/*/cmdline; do echo \$cmdline | cut -f 3 -d / | tr '\n' ' '; cat \$cmdline | tr -c '[:print:]' ' '; echo; done" | grep -v '/proc/.*/cmdline'; echo
 
 
 
