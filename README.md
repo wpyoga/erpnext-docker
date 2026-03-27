@@ -10,13 +10,13 @@ Tailscale here can also mean any similar VPN system. Even OpenVPN can work, albe
 
 ERPNext is an ERP application that is built on top of the Frappe framework.
 
-This is the general order of operations to set up ERPNext:
+In order to understand how it all works, consider this general order of operations to set up ERPNext:
 1. Deploy a Frappe project
 1. Install ERPNext into the project
 1. Create a site within the project
 1. Install ERPNext into the site
 
-All the steps above require the use of the bench CLI, which was made specifically to manage Frappe projects. It can deploy a Frappe project, install applications (not just ERPNext) into the project, create a site within the project, and install applications in the project into the site.
+All the steps above are achieved using the bench CLI, which was made specifically to manage Frappe projects. It can deploy a Frappe project, install applications (not just ERPNext) into the project, create a site within the project, and install applications in the project into the site.
 
 A Frappe project always has a Frappe application inside it. It is automatically installed when deploying a Frappe project. This Frappe application is then imported by other apps (such as ERPNext).
 
@@ -28,7 +28,7 @@ To make user access efficient, a reverse proxy (usually Nginx) handles incoming 
 
 ## Frappe with Docker
 
-Deploying a Frappe project is easy with Docker. However, since Docker containers are not meant to be modified after deployment. Therefore, the recommended way to deploy ERPNext with Docker is to deploy a Frappe project, then install the ERPNext application into it. A nice bonus is that deploying it this way simplifies upgrades later on. The downside is that in order to install more Frappe applications, we have to rebuild the deployment image.
+Deploying a Frappe project is easy with Docker, since dependencies can all be handled within the image. However, one caveat is that Docker containers are not meant to be modified after deployment. Therefore, instead of installing ERPNext into a running Frappe container, the recommended way is to deploy a Frappe project into a base image, install the ERPNext application into the project, then finally deploy the image. A nice bonus is that deploying it this way simplifies upgrades later on. The downside is that in order to install more Frappe applications, we have to rebuild the deployment image.
 
 The Frappe project has provided official ERPNext Docker images on Docker Hub, so we can just use those. It has been prepared in such a way that ERPNext deployment is as simple as it gets. The image:
 - Has bench installed, which we can use to manage deployment
@@ -43,6 +43,8 @@ The Frappe project has provided official ERPNext Docker images on Docker Hub, so
   - queue-long: Frappe worker that priorities longer jobs
   - queue-short: Frappe worker that handles short and normal jobs
 
+The image is ready to use, which means we can spin it up, create a site, and get started with ERPNext right away.
+
 Note that aside from Nginx, the other services are all components of the deployed Frappe project. Also note that while the Nginx binary is not a custom build, its configuration is very tightly coupled to Frappe.
 
 ## Tailscale
@@ -51,13 +53,13 @@ To allow access to the ERPNext instance from within a Tailscale network, we can 
 
 ## Multi Tenancy
 
-It is possible to do multi tenancy with Frappe and ERPNext. In the case of ERPNext, this means one server can host the ERP system of multiple organizations.
+Multi Tenancy is natively supported by Frappe. In the case of ERPNext, this means one server can host the ERP system of multiple organizations.
 
-The easiest way to do this is to set up multiple complete Frappe projects, so that each project hosts a single organization. Each project can be distinct from the others, can have different dependency versions, and different custom code for each one. But this is very resource-intensive, as the database and backend instances are duplicated.
+The most simplistic way to do this is to set up multiple complete Frappe projects, so that each project hosts a single organization. Each project can be distinct from the others, can have different dependency versions, and different custom code for each one. This also enforces data separation between tenants. But this is very resource-intensive, as the database and backend instances are duplicated.
 
 Another method is to set up a single database and cache instance, but with multiple Frappe projects (benches). This is a bit leaner on resources, and allows different ERPNext versions to be implemented for each tenant. This is called multi-bench multi-tenancy.
 
-The least resource-intensive method is to set up a single Frappe project, then create multiple sites under that project. Updates are easy to apply. This is called multi-site multi-tenancy. By default, sites are accessible by its name (which can be a hostname or an FQDN).
+The least resource-intensive method is to set up a single Frappe project, then create multiple sites under that project. Updates are automatically applied to all sites within the project. This is called multi-site multi-tenancy. By default, sites are accessible by its name (which can be a hostname or an FQDN).
 
 ### Multi Tenant HTTPS with Tailscale
 
@@ -109,6 +111,8 @@ Helper scripts are provided in this repo. These configurations are supported:
 - ERPNext v15
 - Serve on a public IP address or within a Tailscale network
 - DNS hosted on Cloudflare or Porkbun
+- Wildcard subdomain or individual subdomains
+- Multiple different domains
 
 To use the scripts, first plan out the project and prepare these files:
 - `build.env`: general configuration
