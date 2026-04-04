@@ -40,4 +40,10 @@ see what all containers within the compose project is running:
 PROJECT=frappe-test-project; echo; docker compose -p $PROJECT ps --format "{{.Names}}" | sed -e "s,^$PROJECT-,," -e 's/-[0-9]\{1,\}$//' | while read CONTAINER; do echo "$CONTAINER"; docker compose -p $PROJECT exec --interactive=false "$CONTAINER" sh -c "for cmdline in /proc/*/cmdline; do echo \$cmdline | cut -f 3 -d / | tr '\n' ' '; cat \$cmdline | tr '\0' ' '; echo; done" | grep -v '/proc/.*/cmdline'; echo; done
 
 
+to put a site into maintenance mode for backup and/or moving to another server:
+docker compose -p project-name exec backend bench --site site-name set-maintenance-mode on
+
+back up the data:
+docker compose -p project-name exec backend bench --site site-name backup --with-files
+
 
